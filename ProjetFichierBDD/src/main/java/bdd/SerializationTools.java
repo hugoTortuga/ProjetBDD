@@ -50,16 +50,25 @@ class SerializationTools {
 	 * @throws ClassNotFoundException si un problème lors de la déserialisation s'est produit
 	 */
 	static Serializable deserialize(byte[] data) throws IOException, ClassNotFoundException {
+		if(data == null)
+			throw new IOException("Le tableau de byte que vous tentez de désérialiser est null");
 
-		/*
-			var deserializedObject = new List<StockageAdresseCegid>();
-			var ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
-			var ser = new DataContractJsonSerializer(deserializedObject.GetType());
-			deserializedObject = ser.ReadObject(ms) as List<StockageAdresseCegid>;
-			ms.Close();
-			*/
-
-		return null;
+		ByteArrayInputStream byteArray = null;
+		Serializable ser = null;
+		try{
+			byteArray = new ByteArrayInputStream(data);
+			ser = byteArray.read();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+		}
+		finally{
+			if(byteArray != null){
+				byteArray.close();
+			}
+			return ser;
+		}
 	}
 
 	/**
