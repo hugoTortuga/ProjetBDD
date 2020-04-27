@@ -17,8 +17,29 @@ class SerializationTools {
 	 * @throws IOException si un problème d'entrée/sortie se produit
 	 */
 	static byte[] serialize(Serializable o) throws IOException {
-		//TODO complete
-		return null;
+		if(o == null)
+			throw new IOException("L'objet que vous tentez de sérialiser est null");
+		ByteArrayOutputStream byteArray = null;
+		ObjectOutputStream object = null;
+		try{
+			byteArray = new ByteArrayOutputStream();
+			object = new ObjectOutputStream(byteArray);
+			object.writeObject(o);
+			object.flush();
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+		}
+		finally {
+			if(byteArray != null){
+				byteArray.close();
+			}
+			if(object != null){
+				object.close();
+			}
+			return byteArray.toByteArray();
+		}
 	}
 
 	/**
@@ -29,7 +50,15 @@ class SerializationTools {
 	 * @throws ClassNotFoundException si un problème lors de la déserialisation s'est produit
 	 */
 	static Serializable deserialize(byte[] data) throws IOException, ClassNotFoundException {
-		//TODO complete
+
+		/*
+			var deserializedObject = new List<StockageAdresseCegid>();
+			var ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+			var ser = new DataContractJsonSerializer(deserializedObject.GetType());
+			deserializedObject = ser.ReadObject(ms) as List<StockageAdresseCegid>;
+			ms.Close();
+			*/
+
 		return null;
 	}
 
