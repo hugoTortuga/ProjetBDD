@@ -42,7 +42,7 @@ class SerializationTools {
 	 * @throws ClassNotFoundException si un problème lors de la déserialisation s'est produit
 	 */
 	static Serializable deserialize(byte[] data) throws IOException, ClassNotFoundException {
-		if(data == null)
+		if(data == null || data.length == 0)
 			throw new NullPointerException("Le tableau de byte que vous tentez de désérialiser est null");
 
 		try{
@@ -99,7 +99,7 @@ class SerializationTools {
 	 * @throws IOException si un problème d'entrée/sortie se produit
 	 */
 	static TreeSet<BDD.FreeSpaceInterval> deserializeFreeSpaceIntervals(byte[] data) throws IOException {
-		if(data == null)
+		if(data == null || data.length == 0)
 			throw new NullPointerException("Le tableau de byte que vous tentez de désérialiser est null");
 
 		try{
