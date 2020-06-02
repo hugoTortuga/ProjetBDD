@@ -63,7 +63,7 @@ public class TestSerialization {
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer> list2=(ArrayList<Integer>)SerializationTools.deserialize(data);
 		Assert.assertEquals(list2, list,"The serialization/deserialization does not work");
-	}
+}
 
 	@Test
 	public void testFreeSpaceInterval() throws IOException {

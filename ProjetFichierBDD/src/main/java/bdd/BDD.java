@@ -127,7 +127,10 @@ public class BDD implements AutoCloseable{
 	 * @throws IOException si un problème d'entrée/sortie se produit
 	 */
 	public void putObject(String objectName, Serializable object) throws IOException {
-		//TODO complete
+		if(object == null)
+			throw new NullPointerException();
+
+		this.putData(objectName, SerializationTools.serialize(object));
 	}
 	/**
 	 * Ajout d'un enregistrement linéairement dans le fichier.

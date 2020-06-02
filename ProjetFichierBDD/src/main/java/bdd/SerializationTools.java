@@ -2,6 +2,7 @@ package bdd;
 
 import java.io.*;
 import java.util.TreeSet;
+import java.nio.ByteBuffer;
 
 /**
  * Classe qui contient des outils de sérialization
@@ -18,27 +19,18 @@ class SerializationTools {
 	 */
 	static byte[] serialize(Serializable o) throws IOException {
 		if(o == null)
-			throw new IOException("L'objet que vous tentez de sérialiser est null");
-		ByteArrayOutputStream byteArray = null;
-		ObjectOutputStream object = null;
+			throw new NullPointerException("L'objet que vous tentez de sérialiser est null");
+
 		try{
-			byteArray = new ByteArrayOutputStream();
-			object = new ObjectOutputStream(byteArray);
-			object.writeObject(o);
-			object.flush();
+			ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+			ObjectOutput output = new ObjectOutputStream(arrayOutputStream);
+			output.writeObject(o);
+			return arrayOutputStream.toByteArray();
 		}
 		catch(Exception ex)
 		{
 			System.out.println(ex);
-		}
-		finally {
-			if(byteArray != null){
-				byteArray.close();
-			}
-			if(object != null){
-				object.close();
-			}
-			return byteArray.toByteArray();
+			return null;
 		}
 	}
 
@@ -51,23 +43,17 @@ class SerializationTools {
 	 */
 	static Serializable deserialize(byte[] data) throws IOException, ClassNotFoundException {
 		if(data == null)
-			throw new IOException("Le tableau de byte que vous tentez de désérialiser est null");
+			throw new NullPointerException("Le tableau de byte que vous tentez de désérialiser est null");
 
-		ByteArrayInputStream byteArray = null;
-		Serializable ser = null;
 		try{
-			byteArray = new ByteArrayInputStream(data);
-			ser = byteArray.read();
+			ByteArrayInputStream arrayInput = new ByteArrayInputStream(data);
+			ObjectInput input = new ObjectInputStream(arrayInput);
+			return (Serializable) input.readObject();
 		}
 		catch(Exception ex)
 		{
 			System.out.println(ex);
-		}
-		finally{
-			if(byteArray != null){
-				byteArray.close();
-			}
-			return ser;
+			throw new ClassNotFoundException("Object non reconnu");
 		}
 	}
 
@@ -85,8 +71,25 @@ class SerializationTools {
 	 * @throws IOException si un problème d'entrée/sortie se produit
 	 */
 	static byte[] serializeFreeSpaceIntervals(TreeSet<BDD.FreeSpaceInterval> freeSpaceIntervals) throws IOException {
-		//TODO complete
-		return null;
+		if(freeSpaceIntervals == null)
+			throw new NullPointerException("Le tableau de byte que vous tentez de sérialiser est null");
+
+		try{
+			ByteArrayOutputStream arrayOutput = new ByteArrayOutputStream();
+			DataOutputStream output = new DataOutputStream(arrayOutput);
+			for (BDD.FreeSpaceInterval value : freeSpaceIntervals) {
+				output.writeLong(value.getStartPosition());
+				output.writeLong(value.getLength());
+			}
+			byte[] array = arrayOutput.toByteArray();
+			return array;
+
+		}
+		catch(Exception ex)
+		{
+			System.out.println(ex);
+			throw new IOException();
+		}
 	}
 
 	/**
@@ -96,7 +99,28 @@ class SerializationTools {
 	 * @throws IOException si un problème d'entrée/sortie se produit
 	 */
 	static TreeSet<BDD.FreeSpaceInterval> deserializeFreeSpaceIntervals(byte[] data) throws IOException {
-		//TODO complete
-		return null;
+		if(data == null)
+			throw new NullPointerException("Le tableau de byte que vous tentez de désérialiser est null");
+
+		try{
+
+			byte[] array1 = new byte[8];
+			byte[] array2 = new byte[8];
+
+			ByteArrayInputStream arrayInput = new ByteArrayInputStream(data);
+			TreeSet<BDD.FreeSpaceInterval> tree = new TreeSet<BDD.FreeSpaceInterval>();
+
+			while (arrayInput.read(array1) != -1 && arrayInput.read(array2) != -1) {
+				tree.add(new BDD.FreeSpaceInterval(
+						ByteBuffer.wrap(array1).getLong(),
+						ByteBuffer.wrap(array2).getLong()
+				));
+			}
+			return tree;
+		}
+		catch(Exception ex){
+			System.out.println(ex);
+			throw new IOException();
+		}
 	}
 }
